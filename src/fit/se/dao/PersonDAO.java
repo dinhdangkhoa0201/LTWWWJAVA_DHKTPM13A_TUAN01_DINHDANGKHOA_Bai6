@@ -32,17 +32,18 @@ public class PersonDAO {
 		return false;
 	}
 	
-	public void updatePerson(Person person) {
+	public boolean updatePerson(Person person) {
 		EntityTransaction tr = em.getTransaction();
 		try {
 			tr.begin();
 			em.merge(person);
 			tr.commit();
-			return;
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			tr.rollback();
 		}
+		return false;
 	}
 	
 	public boolean deletePerson(Person person) {

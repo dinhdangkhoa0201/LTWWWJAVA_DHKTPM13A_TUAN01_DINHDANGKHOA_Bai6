@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,13 +15,14 @@ import fit.se.dao.PersonDAO;
 /**
  * Servlet implementation class AddPerson
  */
-public class AddPerson extends HttpServlet {
+@WebServlet(urlPatterns = {"/AddPerson"})
+public class AddPersonServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AddPerson() {
+    public AddPersonServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -29,23 +31,13 @@ public class AddPerson extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		PersonDAO personDAO = new PersonDAO();
 		String name = request.getParameter("name");
 		String country = request.getParameter("country");
-		String message = "";
-		if(!name.equalsIgnoreCase("") && !country.equalsIgnoreCase("")) {
-			if(personDAO.addPerson(new Person(name, country)) == true){
-				message = "Add Person Successfully";
-			} else {
-				message = "Add Person Fail";
-			}
-			
-		} else if(name.equalsIgnoreCase("") || country.equalsIgnoreCase("")) {
-			message = "Bạn phải nhập dữ liệu của cả 2 ô Name và Country";
+		PersonDAO personDAO = new PersonDAO();
+		if(personDAO.addPerson(new Person(name, country)) == true) {
+			request.setAttribute("message", "Thêm thành công");
+			response.sendRedirect("ListPeople");
 		}
-		request.getSession().setAttribute("message", message);
-		RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
-		rd.forward(request, response);
 	}
 
 }
